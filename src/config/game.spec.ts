@@ -1,7 +1,7 @@
-import { Game } from './game';
+import { GameConfig } from './game.config';
 
 describe('Game', () => {
     it('should be defined', () => {
-        expect(new Game()).toBeDefined();
+        expect(new GameConfig()).toBeDefined();
     });
 });

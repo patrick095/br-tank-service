@@ -1,7 +1,7 @@
-import { User } from './user';
+import { UserInvalidException } from './user.exceptions';
 
 describe('User', () => {
     it('should be defined', () => {
-        expect(new User()).toBeDefined();
+        expect(new UserInvalidException()).toBeDefined();
     });
 });

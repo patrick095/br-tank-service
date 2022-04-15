@@ -1,4 +1,4 @@
-import { Game } from './game';
+import { Game } from './game.exceptions';
 
 describe('Game', () => {
     it('should be defined', () => {
