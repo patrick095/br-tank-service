@@ -15,3 +15,16 @@ export interface windInterface {
     speed: number;
     angle: number;
 }
+
+export interface roomInterface {
+    id: number;
+    players: Array<string>;
+    map?: string;
+    status: 'waiting' | 'playing' | 'finished';
+}
+
+export interface onlinePlayersInterface {
+    userId: string;
+    name: string;
+    socketId: string;
+}

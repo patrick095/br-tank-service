@@ -30,6 +30,8 @@ export class UserService {
         if (!isPasswordValid) {
             throw new UserInvalidException();
         }
+        user.password = undefined;
+        user.email = undefined;
         return user;
     }
 
@@ -45,7 +47,10 @@ export class UserService {
         user.password = await bcrypt.hash(user.password, this.config.BCRYPT_SALT_ROUNDS);
         const player = await this.playerService.create(user.username);
         user.playerId = player._id.toString();
-        return this.usersRepository.save(user);
+        const savedUser = await this.usersRepository.save(user);
+        savedUser.password = undefined;
+        savedUser.email = undefined;
+        return savedUser;
     }
 
     async remove(id: string): Promise<void> {

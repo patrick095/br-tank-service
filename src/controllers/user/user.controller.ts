@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Post, Put, UsePipes } from '@nestjs/common';
 import { SigninDto } from 'src/dto/user/signin-dto';
 import { SignupDto } from 'src/dto/user/signup-dto';
 import { UserNotFoundException } from 'src/exceptions/user.exceptions';
@@ -10,7 +10,7 @@ import { UserService } from 'src/services/user/user.service';
 export class UserController {
     constructor(private readonly userService: UserService, private readonly playerService: PlayerService) {}
 
-    @Get()
+    @Post()
     @UsePipes(new CustomValidationPipe())
     async signin(@Body() { username, password }: SigninDto) {
         try {
@@ -21,7 +21,7 @@ export class UserController {
         }
     }
 
-    @Post()
+    @Put()
     @UsePipes(new CustomValidationPipe())
     signup(@Body() user: SignupDto) {
         return this.userService.create(user);
