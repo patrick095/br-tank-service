@@ -12,7 +12,7 @@ export class Game implements gameInterface {
     wind: windInterface;
 
     @Column()
-    players: Array<playerInterface>;
+    players: Array<string>;
 
     @Column()
     playerTurn: string;
@@ -21,10 +21,13 @@ export class Game implements gameInterface {
     turn: number;
 
     @Column()
-    winner: string;
+    winner: playerInterface;
 
     @Column()
     countdown: number;
+
+    @Column()
+    status: 'playning' | 'finished' = 'playning';
 
     $or: Array<any>;
 }

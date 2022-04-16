@@ -26,5 +26,8 @@ export class Player implements playerInterface {
     @Column()
     hp = 100;
 
+    @Column()
+    angle = 0;
+
     $or: Array<any>;
 }

@@ -14,14 +14,29 @@ export class PlayerService {
         return await this.playerRepository.findOne(id);
     }
 
+    async findPlayers(user1Id: string, user2Id: string): Promise<Array<Player>> {
+        const savedPlayers = await this.playerRepository.findByIds([user1Id, user2Id]);
+        const players = savedPlayers.map((player) => {
+            return {
+                ...player,
+                angle: 0,
+                position: {
+                    x: 0,
+                    y: 0,
+                },
+            };
+        });
+        return this.setPositions(players);
+    }
+
     async create(name: string): Promise<Player> {
         const player = new Player();
         player.name = name;
         return await this.playerRepository.save(player);
     }
 
-    async update(player: Player): Promise<Player> {
-        return await this.playerRepository.save(player);
+    async update(player: Player) {
+        return await this.playerRepository.update(player._id.toString(), player);
     }
 
     async delete(id: number): Promise<Player> {
@@ -31,5 +46,13 @@ export class PlayerService {
 
     async find(ids: Array<string>): Promise<Array<Player>> {
         return await this.playerRepository.findByIds(ids);
+    }
+
+    private setPositions(players: Array<Player>): Array<Player> {
+        const positions = [90, 670];
+        players.forEach((player, index) => {
+            player.position.x = positions[index];
+        });
+        return players;
     }
 }

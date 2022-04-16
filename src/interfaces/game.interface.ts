@@ -1,14 +1,15 @@
 import { ObjectID } from 'typeorm';
-import { playerInterface } from './player.interface';
+import { playerInterface, positionInterface } from './player.interface';
 
 export interface gameInterface {
-    _id: ObjectID;
+    _id?: ObjectID;
     wind: windInterface;
-    players: Array<playerInterface>;
+    players: Array<string>;
     playerTurn: string;
     turn: number;
-    winner: string;
+    winner: playerInterface;
     countdown: number;
+    status: 'playning' | 'finished';
 }
 
 export interface windInterface {
@@ -16,11 +17,26 @@ export interface windInterface {
     angle: number;
 }
 
+export interface ShootInterface {
+    playerPosition: positionInterface;
+    enemyPosition: positionInterface;
+    playerId: string;
+    enemyId: string;
+    angle: number;
+    power: number;
+}
+
 export interface roomInterface {
     id: number;
-    players: Array<string>;
+    ownner: string;
+    players: Array<playerRoomInterface>;
     map?: string;
     status: 'waiting' | 'playing' | 'finished';
+}
+
+interface playerRoomInterface {
+    id: string;
+    username: string;
 }
 
 export interface onlinePlayersInterface {

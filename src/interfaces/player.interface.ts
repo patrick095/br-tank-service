@@ -1,12 +1,13 @@
 import { ObjectID } from 'typeorm';
 
 export interface playerInterface {
-    _id?: ObjectID;
+    _id: ObjectID;
     name: string;
     position: positionInterface;
     team: number;
     color: string;
     hp: number;
+    angle: number;
 }
 
 export interface positionInterface {

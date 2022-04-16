@@ -17,6 +17,10 @@ export class UserService {
         private playerService: PlayerService,
     ) {}
 
+    async findById(id: string): Promise<Users> {
+        return await this.usersRepository.findOne(id);
+    }
+
     async findOne({ username, email, password }: findUserInterface): Promise<Users> {
         const user = await this.usersRepository.findOne({
             where: {

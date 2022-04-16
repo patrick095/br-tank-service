@@ -4,4 +4,5 @@ export enum ErrorCode {
     'Você não tem permissão para executar essa ação' = 2,
     'Sala está cheia' = 11,
     'Sala não existe' = 12,
+    'Precisar ter 2 pesssoas para iniciar uma partida' = 13,
 }
