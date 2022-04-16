@@ -16,7 +16,6 @@ export interface userInterface {
 
 export interface findUserInterface {
     username?: string;
-    id?: string;
     email?: string;
     password: string;
 }

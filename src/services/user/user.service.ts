@@ -17,10 +17,10 @@ export class UserService {
         private playerService: PlayerService,
     ) {}
 
-    async findOne({ id, username, email, password }: findUserInterface): Promise<Users> {
+    async findOne({ username, email, password }: findUserInterface): Promise<Users> {
         const user = await this.usersRepository.findOne({
             where: {
-                $or: [{ id }, { username }, { email }],
+                $or: [{ username }, { email }],
             },
         });
         if (!user) {
