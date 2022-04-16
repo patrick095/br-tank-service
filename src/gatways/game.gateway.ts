@@ -32,7 +32,7 @@ export class GameGateway implements OnGatewayInit {
     }
 
     afterInit(server: Server) {
-        this.deleteAllGames();
+        // this.deleteAllGames();
         this.server = server;
         server.on('connection', (socket) => {
             socket.on('id', ({ id, username }) => {
