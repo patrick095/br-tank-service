@@ -33,7 +33,7 @@ export class GameService {
     }
 
     public async getGame(gameId: string): Promise<Game> {
-        const game = await this.gameRepository.findOne(gameId);
+        const game = await this.gameRepository.findOneById(gameId);
         return game;
     }
 

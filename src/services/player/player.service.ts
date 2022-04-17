@@ -11,7 +11,7 @@ export class PlayerService {
     ) {}
 
     async findOne(id: string): Promise<Player> {
-        return await this.playerRepository.findOne(id);
+        return await this.playerRepository.findOneById(id);
     }
 
     async findPlayers(user1Id: string, user2Id: string): Promise<Array<Player>> {
@@ -40,7 +40,7 @@ export class PlayerService {
     }
 
     async delete(id: number): Promise<Player> {
-        const player = await this.playerRepository.findOne(id);
+        const player = await this.playerRepository.findOneById(id);
         return await this.playerRepository.remove(player);
     }
 
