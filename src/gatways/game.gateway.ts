@@ -32,7 +32,7 @@ export class GameGateway implements OnGatewayInit {
     }
 
     afterInit(server: Server) {
-        // this.deleteAllGames();
+        this.deleteAllGames();
         this.server = server;
         server.on('connection', (socket) => {
             socket.on('id', ({ id, username }) => {
@@ -40,15 +40,8 @@ export class GameGateway implements OnGatewayInit {
                 if (!isOnline) {
                     this.onlinePlayers.push({ userId: id, socketId: socket.id, name: username });
                 } else {
-                    server.fetchSockets().then((s) => {
-                        const userSocket = s.find((s) => s.id === isOnline.socketId);
-                        userSocket?.emit('error', {
-                            msg: ErrorCode[1],
-                            code: 1,
-                        });
-                    });
-                    socket.emit('error', { msg: ErrorCode[0], code: 0 });
-                    socket.disconnect();
+                    const index = this.onlinePlayers.findIndex((player) => player.userId === id);
+                    this.onlinePlayers[index].socketId = socket.id;
                 }
                 this.emitOnlinePlayers(server);
             });
@@ -191,21 +184,21 @@ export class GameGateway implements OnGatewayInit {
 
     @SubscribeMessage('shoot')
     async shoot(
-        @MessageBody() data: { playerId: string; gameId: string; power: number },
+        @MessageBody() data: { playerId: string; gameId: string; power: number; angle: number },
     ): Promise<WsResponse<ShootInterface>> {
         const game = await this.gameService.getGame(data.gameId);
         const enemyId = game.players.find((p) => p !== data.playerId);
         const players = await this.playerService.findPlayers(data.playerId, enemyId);
         const player = players.find((p) => p._id.toString() === data.playerId);
         const enemy = players.find((p) => p._id.toString() === enemyId);
-        const power = (data.power <= 50 && data.power >= 0 ? data.power : 50) / 2;
+        const power = (data.power <= 100 && data.power >= 0 ? data.power : 50) * 2;
 
         const BulletInfo = {
             playerPosition: player.position,
             enemyPosition: enemy?.position,
             playerId: player._id.toString(),
             enemyId: enemy._id.toString(),
-            angle: player.angle,
+            angle: data.angle,
             power,
         };
 
