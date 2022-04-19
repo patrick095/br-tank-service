@@ -183,9 +183,7 @@ export class GameGateway implements OnGatewayInit {
     }
 
     @SubscribeMessage('shoot')
-    async shoot(
-        @MessageBody() data: { playerId: string; gameId: string; power: number; angle: number },
-    ): Promise<WsResponse<ShootInterface>> {
+    async shoot(@MessageBody() data: { playerId: string; gameId: string; power: number; angle: number }) {
         const game = await this.gameService.getGame(data.gameId);
         const enemyId = game.players.find((p) => p !== data.playerId);
         const players = await this.playerService.findPlayers(data.playerId, enemyId);
@@ -208,7 +206,7 @@ export class GameGateway implements OnGatewayInit {
             this.gameCountDown.splice(countIndex, 1);
             game.countdown = 0;
             this.nextTurn(game);
-            return { event: 'shoot', data: BulletInfo };
+            this.emitShoot(data.gameId, BulletInfo);
         }
         return;
     }
@@ -231,6 +229,10 @@ export class GameGateway implements OnGatewayInit {
 
     private emitGame(gameId: string, game?: gameInterface, players?: Array<playerInterface>) {
         this.server.emit(`game-${gameId}`, { game, players });
+    }
+
+    private emitShoot(gameId: string, bullet: ShootInterface) {
+        this.server.emit(`shoot-${gameId}`, bullet);
     }
 
     private async startCountDown(game: Game) {
