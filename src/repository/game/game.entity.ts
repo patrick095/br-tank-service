@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/indent */
 import { gameInterface, windInterface } from 'src/interfaces/game.interface';
-import { playerInterface } from 'src/interfaces/player.interface';
 import { Column, Entity, Index, ObjectID, ObjectIdColumn } from 'typeorm';
+import { Player } from '../player/player.entity';
 @Entity()
 export class Game implements gameInterface {
     @ObjectIdColumn()
@@ -21,7 +21,7 @@ export class Game implements gameInterface {
     turn: number;
 
     @Column()
-    winner: playerInterface;
+    winner: Player;
 
     @Column()
     countdown: number;

@@ -32,7 +32,7 @@ export class GameGateway implements OnGatewayInit {
     }
 
     afterInit(server: Server) {
-        this.deleteAllGames();
+        // this.deleteAllGames();
         this.server = server;
         server.on('connection', (socket) => {
             socket.on('id', ({ id, username }) => {
@@ -121,6 +121,19 @@ export class GameGateway implements OnGatewayInit {
         }
     }
 
+    @SubscribeMessage('leaveGame')
+    async leaveGame(@MessageBody() data: { userId: string; gameId: string }) {
+        const game = await this.gameService.getGame(data.gameId);
+        if (game) {
+            const winnerId = game.players.find((player) => player !== data.userId);
+            const winner = await this.playerService.findOne(winnerId);
+            game.winner = winner;
+            game.status = 'finished';
+            await this.gameService.updateGame(data.gameId, game);
+            this.emitGame(data.gameId, game);
+        }
+    }
+
     @SubscribeMessage('chatRoom')
     async chatRoom(@MessageBody() data: { userId: string; roomId: number; message: string }) {
         const user = await this.userService.findById(data.userId);
@@ -186,7 +199,7 @@ export class GameGateway implements OnGatewayInit {
     async shoot(@MessageBody() data: { playerId: string; gameId: string; power: number; angle: number }) {
         const game = await this.gameService.getGame(data.gameId);
         const enemyId = game.players.find((p) => p !== data.playerId);
-        const players = await this.playerService.findPlayers(data.playerId, enemyId);
+        const players = await this.playerService.findPlayers(data.playerId, enemyId, false);
         const player = players.find((p) => p._id.toString() === data.playerId);
         const enemy = players.find((p) => p._id.toString() === enemyId);
         const power = (data.power <= 100 && data.power >= 0 ? data.power : 50) * 2;
@@ -209,6 +222,17 @@ export class GameGateway implements OnGatewayInit {
             this.emitShoot(data.gameId, BulletInfo);
         }
         return;
+    }
+
+    @SubscribeMessage('hitBullet')
+    async hitBullet(@MessageBody() data: { gameId: string; playerId: string; damage: number }) {
+        const game = await this.gameService.getGame(data.gameId);
+        const player = await this.playerService.findOne(data.playerId);
+        if (game && player && game.status === 'playning') {
+            player.hp -= data.damage;
+            await this.playerService.update(player);
+            this.emitGame(data.gameId, null, [player]);
+        }
     }
 
     private sendStartGame(userId: string, game: gameInterface) {

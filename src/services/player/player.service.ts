@@ -14,8 +14,9 @@ export class PlayerService {
         return await this.playerRepository.findOneById(id);
     }
 
-    async findPlayers(user1Id: string, user2Id: string): Promise<Array<Player>> {
+    async findPlayers(user1Id: string, user2Id: string, resetPlayers = true): Promise<Array<Player>> {
         const savedPlayers = await this.playerRepository.findByIds([user1Id, user2Id]);
+
         const players = savedPlayers.map((player) => {
             return {
                 ...player,
@@ -24,8 +25,12 @@ export class PlayerService {
                     x: 0,
                     y: 0,
                 },
+                hp: 100,
             };
         });
+        if (resetPlayers) {
+            players.forEach((player) => this.update(player));
+        }
         return this.setPositions(players);
     }
 

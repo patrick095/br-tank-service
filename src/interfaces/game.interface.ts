@@ -1,5 +1,6 @@
+import { Player } from 'src/repository/player/player.entity';
 import { ObjectID } from 'typeorm';
-import { playerInterface, positionInterface } from './player.interface';
+import { positionInterface } from './player.interface';
 
 export interface gameInterface {
     _id?: ObjectID;
@@ -7,7 +8,7 @@ export interface gameInterface {
     players: Array<string>;
     playerTurn: string;
     turn: number;
-    winner: playerInterface;
+    winner: Player;
     countdown: number;
     status: 'playning' | 'finished';
 }
